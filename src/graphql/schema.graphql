@@ -1,0 +1,71 @@
+enum Status {
+    TODO
+    IN_PROGRESS
+    DONE
+}
+union Result = ColorBook | TextBook
+
+type Publisher {
+    id:ID!
+    name:String!
+    books :[Result!]
+}
+
+interface Book{
+    title:String!
+    id:ID!
+    name:String
+    publisher : Publisher!
+}
+
+type TextBook implements Book {
+    title:String!
+    id:ID!
+    name:String
+    publisher : Publisher!
+    subject:[String]
+}
+
+type ColorBook implements Book {
+    title:String!
+    id:ID!
+    name:String
+    publisher : Publisher!
+    colors:[String]
+}
+
+type ReadStatus {
+    id:ID!
+    book :Result!
+    readStatus : Status,
+    NB:String
+}
+
+type Query{
+    books:[Result!],
+    getBook(id:ID!) : Result
+    getMyReading : [ReadStatus!]
+    getPublisher(id:ID!) : Publisher!
+}
+
+input ReadStatusInput {
+    id:ID!
+    readStatus:Status!
+}
+input CreateBookInput {
+    title:String!
+    id:ID!
+    name:String
+    publisher_id:ID!
+    subject:[String]
+    colors:[String]
+
+}
+type Mutation {
+    changeReadStatus(userReadInput:ReadStatusInput) : ReadStatus!
+    createBookByPublisher(createBookInput:CreateBookInput):Result!
+}
+
+type Subscription {
+    bookFeed(pub_id:ID!):Result
+}
